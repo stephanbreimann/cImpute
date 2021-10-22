@@ -66,6 +66,7 @@ def dev():
         plt.tight_layout()
         plt.savefig(ut.FOLDER_RESULTS + f"cImpute_scatter{group}_proteomics_lfq.png")
         plt.show()
+        print("hit")
         plt.close()
 
 # III Test/Caller Functions
