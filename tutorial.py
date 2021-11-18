@@ -45,7 +45,7 @@ def dev():
                           dict_group_cols=dict_group_cols,
                           min_cs=0.5,
                           loc_up_mnar=loc_up_mnar,
-                          std_factor=0.8,
+                          std_factor=1,
                           n_neigbhors=6)
     df_imputed.to_excel(ut.FOLDER_RESULTS + "cImpute_data_proteomics_lfq.xlsx")
     # Plot histogram

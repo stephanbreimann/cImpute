@@ -25,6 +25,7 @@ For more details look into the README
 import pandas as pd
 import numpy as np
 
+
 from scipy.stats import truncnorm
 from sklearn.impute import KNNImputer
 
