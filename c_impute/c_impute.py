@@ -176,17 +176,11 @@ def impute(df_group=None, mv_classes=None, list_cs=None, min_cs=0.5, d_min=None,
            n_neighbors=5, std_factor=0.5):
     """Group-wise imputation over whole data set"""
     df_group = df_group.copy()
-    list_df = []
+    args = dict(n_neighbors=n_neighbors, std_factor=std_factor, d_min=d_min, up_mnar=up_mnar)
     for mv_class in LIST_MV_CLASSES:
-        mask = np.array([True if (l == mv_class and cs >= min_cs) else False for l, cs in zip(mv_classes, list_cs)])
-        df = df_group[mask]
-        df_imputed = _impute(df=df, mv_class=mv_class,
-                             n_neighbors=n_neighbors, std_factor=std_factor,
-                             d_min=d_min, up_mnar=up_mnar)
-        list_df.append(df_imputed)
-    df_group_imputed = pd.concat(list_df, axis=0).sort_index()
-    mask = np.array([True if i in df_group_imputed.index else False for i in df_group.index])
-    df_group[mask] = df_group_imputed
+        mask = np.array([True if (l == mv_class and cs >= min_cs) else False
+                         for l, cs in zip(mv_classes, list_cs)])
+        df_group[mask] = _impute(df=df_group[mask], mv_class=mv_class, **args)
     return df_group
 
 
@@ -312,15 +306,12 @@ class cImpute:
             DataFrame with (a) imputed intensities values and (b) group-wise confidence score and NaN classification.
         """
         df = df.copy()
-        df.index = df[self.str_id]
-        df = df.sort_index()
         all_group_cols = self.get_all_group_cols(dict_group_cols=dict_group_cols)
         d_min, up_mnar = get_up_mnar(df=df[all_group_cols], loc_up_mnar=loc_up_mnar)
         # TODO change to numpy Arrays & compute summary statistic (n MVs per class and group)
         list_df_groups = []
         list_mv_classes = []
         cs_vals = []
-
         for group in dict_group_cols:
             cols = dict_group_cols[group]
             df_group = df[cols]
@@ -334,7 +325,6 @@ class cImpute:
             list_df_groups.append(df_group)
             list_mv_classes.append(mv_classes)
             cs_vals.append(list_cs)
-
         # Merge imputation for all groups
         df_imputed = pd.concat(list_df_groups, axis=1)
         # Add aggregated CS values (mean and std)

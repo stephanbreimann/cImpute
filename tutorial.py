@@ -40,7 +40,6 @@ def dev():
     d_min, up_mnar, d_max = cimp.get_limits(df=df_raw.copy(),
                                             dict_group_cols=dict_group_cols,
                                             loc_up_mnar=loc_up_mnar)
-
     df_imputed = cimp.run(df=df_raw.copy(),
                           dict_group_cols=dict_group_cols,
                           min_cs=0.5,
